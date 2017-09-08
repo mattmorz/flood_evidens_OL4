@@ -1,0 +1,82 @@
+/*
+ *      #####
+ *     #### _\_  ________
+ *     ##=-[.].]| \      \
+ *     #(    _\ |  |------|
+ *      #   __| |  ||||||||
+ *       \  _/  |  ||||||||
+ *    .--'--'-. |  | ____ |
+ *   / __      `|__|[o__o]|
+ * _(____nm_______ /____\____ 
+ * 
+ * Hey you! Looks like you found our main css file through some l33t h4x0ry.
+ * You're welcome to give it a read-through if you'd like. But if you want to
+ * barrow something clever and use it in your projects we'd really appreciate a
+ * mention. Thanks!
+ */
+#locateMe,
+p#pLegend,
+#hide_print,
+#hide_table,
+#OpenLayers_Control_LayerSwitcher_27_layersDiv {
+    display: none
+}
+
+#print_map,
+small,
+.olButton,
+.olAlphaImg,
+#place,
+#tbl_barangay {
+    display: none
+}
+
+#map_wrapper {
+    width: 75%;
+    float: left;
+    height: 580px
+}
+
+#map {
+    width: 100%;
+    height: 570px;
+    border: 2px solid #000
+}
+
+#print_area {
+    width: 100%;
+    position: relative;
+    border: 1px solid #3299CC;
+}
+
+#overlay {
+    width: 25%;
+    float: right;
+    z-index: 10;
+    display: block
+}
+
+#overlay h5 {
+    margin-top: 0
+}
+
+#legend_print {
+    width: 150px;
+    height: auto;
+    margin: 0 auto;
+    border: 1px solid #e1e1e1
+}
+
+#lidar_logo, #csu_logo {
+    width: 60px;
+    height: auto;
+    margin: 0 auto;
+}
+
+.center-table {
+    margin: 0 auto !important;
+}
+
+/*
+ * (c) 2015 CSU Phil-LiDAR 1. All rights reserved.
+ */

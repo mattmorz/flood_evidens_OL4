@@ -1,0 +1,861 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--<meta property="fb:app_id" content="345922015748393" />
+    <meta property="og:url" content="http://121.97.192.11:8082/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="CSU-Phil LiDAR 1 : Flood EViDEns" />
+    <meta property="og:description" content="The Web-based Near-real Time Flood Event Visualization and Damage Estimations (Flood EViDEns) is an online geo-visualization application developed through the Phil-LiDAR 1 project of Caraga State University (CSU)."/>
+    <meta property="og:image" content="http://121.97.192.11:8082/static/images/logosamp_small.png" />-->
+
+    <meta content="text/html">
+    <link rel="icon" href="{% static "images/favicon.ico" %}">
+    <meta name="description"
+          content="The Web-based Near-real Time Flood Event Visualization and Damage Estimations (Flood EViDEns) is an online geo-visualization application developed through the Phil-LiDAR 1 project of Caraga State University (CSU).">
+    <meta name="author" content="CSU Phil-LiDAR 1">
+    <title>CSU-Phil LiDAR 1 : Flood EViDEns</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" type="text/css" href="{% static "css/bootstrap.min.css" %}"/>
+    <!-- All CSS -->
+    <link rel="stylesheet" type="text/css" href="{% static "css/all_min.css" %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static "css/bootstrap-tour.min.css" %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static "css/datatables.min.css" %}"/>
+    <style type="text/css">
+        body {
+            font-family: Arial, Helvetica, sans-serif
+        }
+
+        #top-link-block.affix-top {
+            position: absolute;
+            bottom: -82px;
+            right: 10px;
+            z-index: 9999
+        }
+
+        #top-link-block.affix {
+            position: fixed;
+            bottom: 18px;
+            right: 10px;
+            z-index: 9999
+        }
+
+        #stats, #locateMe, #hide_table, #loading_table, #loading_detailed_table {
+            display: none
+        }
+
+        fieldset.scheduler-border {
+            border: 1px groove #ddd !important;
+            padding: 0 0 10px 10px !important;
+            margin: 0 0 1.5em !important;
+            -webkit-box-shadow: 0 #eee;
+            box-shadow: 0 #eee
+        }
+
+        legend.scheduler-border {
+            font-size: 14px !important;
+            font-weight: 700 !important;
+            text-align: left !important;
+            width: auto;
+            padding: 0 10px;
+            border-bottom: none
+        }
+
+        .loading_me {
+            background: #e1e1e1 url('{% static "images/loading_spinner.gif" %}') center center no-repeat
+        }
+
+        div.btn-group.open, div.btn-group {
+            display: inline-block
+        }
+
+        div.dt-buttons.btn-group {
+            display: block
+        }
+
+        table#partner.table.table-striped > tbody > tr > td {
+            vertical-align: middle
+        }
+
+        #share_fb {
+            padding-top: 15px
+        }
+
+        table#jsontable_brgy td:last-child, table#jsontable_brgy th:last-child {
+            display: none
+        }
+    </style>
+</head>
+<body>
+<!--<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.8";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>-->
+
+<!-- Static navbar -->
+<nav class="navbar navbar-custom navbar-static-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/"><img src="{% static "images/android-icon-36x36.png" %}"
+                                                  style="margin-top:-10px" alt="csulidar1 logo"/></a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="/">Home</a></li>
+                <li><a data-toggle="modal" data-target="#myModalContactForm1"
+                       title="Click to read About this Application" href="#">About</a></li>
+                <li><a href="#" id="how_to" title="How to use this application?">How to?</a></li>
+                <li><a data-toggle="modal" data-target="#myModalDataSources" href="#">Data Sources</a></li>
+                <li><a data-toggle="modal" data-target="#myModalDocumentation" href="#">Documentation</a></li>
+                <li><a data-toggle="modal" data-target="#myModalPartner" href="#">Partner Institutions</a></li>
+                <li><a data-toggle="modal" data-target="#myModalAcknowledgment" href="#">Acknowledgement</a></li>
+                <li><a data-toggle="modal" data-target="#myModalContactForm" title="Click to View Contact Information"
+                       href="#">Contact</a></li>
+                <!--<li><div id="share_fb" class="fb-share-button" data-href="http://121.97.192.11:8082/" data-layout="button" data-size="small" data-mobile-iframe="true"><a class="fb-xfbml-parse-ignore" target="_blank" rel="noopener"  href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2F121.97.192.11%3A8082%2F&amp;src=sdkpreparse">Share on Facebook</a></div><li>-->
+            </ul>
+            <div class="col-sm-3 col-md-3 pull-right">
+            </div>
+        </div>
+    </div>
+</nav>
+<div class="container" style="padding: 10px;">
+    <div class="col-md-1" style="margin:0 10px 15px 20px;text-align:center"><img
+            src="{% static "images/logosamp_small.png" %}" width="100px" height="100px" alt="flood evidens logo"/></div>
+    <div class="col-md-6" style="margin-left:30px;text-align:center"><h2 class="text-left"><span style="color: #00a7e6">Flood EViDEns</span>
+        <br/> <span style="font-size: 24px">Flood <span style="text-decoration: underline">E</span>vent <span
+                style="text-decoration: underline">Vi</span>sualization and <span
+                style="text-decoration: underline">D</span>amage <span style="text-decoration: underline">E</span>stimatio<span
+                style="text-decoration: underline">ns</span></span></h2></div>
+    <div class="col-md-4" style="margin-bottom:30px;text-align:right"><img src="{% static "images/partners.PNG" %}"
+                                                                           width="380px" height="53px"
+                                                                           alt="partners institution logos"/></div>
+</div>
+<div class="container bg" id="my_bg" style="background-color:#FCFCFC;">
+<div class="row" id="entire_page">
+<div class="col-md-12">
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion7" href="#collapseSeven"><span
+                        class="glyphicon glyphicon-question-sign"></span> Queries</a>
+            </h4>
+        </div>
+        <div id="collapseSeven" class="panel-collapse collapse in" role="tabpanel">
+            <div class="panel-body">
+                <div class="col-md-12">
+                    <fieldset class="scheduler-border">
+                        <legend class="scheduler-border">Flood Event Visualization</legend>
+                        <form class="form-inline text-center">
+                            <div class="form-group">
+                                <select class="form-control" id="locality" name="flood_locality">
+                                    <option value="Nothing Dude">Select Province</option>
+                                    {% for rb in river_basins %}
+                                        <option value="{{ rb.province }}">{{ rb.province }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="mymuni"></label>
+                                <select class="form-control" id="mymuni" name="mymuni">
+                                    <option value="All Municipalities">Select Municipality</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="myplaces"></label>
+                                <select class="form-control" id="myplaces" name="myplaces">
+                                    <option value="All Barangays">Select Barangay</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="flood_event"></label>
+                                <select class="form-control" id="flood_event" name="flood_event">
+                                    <option value="Nothing Dude">Select Flood Event</option>
+                                </select>
+                            </div>
+
+                            <input type="hidden" id="affectedLayer" value="None"/>
+                            <input type="hidden" id="floodLayer"/>
+                            <input type="hidden" id="getMuni" value="" name="getMuni"/>
+
+                            <div class="checkbox" title="Check to show stats then click Go button">
+                                <label>
+                                    <input type="checkbox" id="show_stats"> <strong>Show Flood Hazard Stats</strong>
+                                </label>
+                            </div>
+                            <div class="checkbox" title="Check to show Flood Hazard Map">
+                                <label>
+                                    <input type="checkbox" id="show_floodMap"> <strong>Show Flood Map</strong>
+                                </label>
+                            </div>
+                            <div class="checkbox" title="Check to show Affected Building and Structures">
+                                <label>
+                                    <input type="checkbox" id="show_affected"/> <strong><span>Show Affected Building and Structures</span></strong>
+                                </label>
+                            </div>
+                            <div class="form-group" style="padding-top: 5px">
+                                <input type="button" class="btn btn-primary" id="load_table" value="Go"
+                                       style="width:100px"/>
+                            </div>
+                        </form>
+                    </fieldset>
+                    <fieldset class="scheduler-border">
+                        <legend class="scheduler-border">Water Level Monitoring and Forecasting</legend>
+                        <form class="form-inline text-center">
+                            <div class="form-group">
+                                <label for="water_station">Select Station </label>
+                                <select class="form-control" id="water_station" name="water_station">
+                                    <option value="none">Loading...</option>
+                                </select>
+                            </div>
+                            <div class="checkbox" title="Check to Show Locations in Map">
+                                <label>
+                                    <input type="checkbox" id="show_water_level" value="Water-level Stations"
+                                           onclick="toggleControl(this);"> <strong>Show Locations in Map</strong>
+                                </label>
+                            </div>
+                            <div class="form-group" style="padding-top: 5px">
+                                <input type="button" class="btn btn-primary" id="load_station"
+                                       value="View Current Status and Forecasted Water Level"/>
+                            </div>
+                        </form>
+                    </fieldset>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-md-12" id="stats">
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion6" href="#collapseSix"><span
+                        class="glyphicon glyphicon-info-sign"></span> Flood Hazard Information</a>
+            </h4>
+        </div>
+        <div id="collapseSix" class="panel-collapse collapse in" role="tabpanel">
+            <div class="panel-body">
+                <div class="col-md-12" id="table_wrapper">
+                    <div class="text-center" id="h3">
+                    </div>
+                    <strong><p id="tbl_info" class="text-center"></p></strong>
+
+                    <p class="text-center" id="loading_table"></p>
+
+                    <div class="table-responsive" id="stats_wrapper">
+                        <small class="text-info"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+                            Click the barangay name to display the estimated number of affected structures by its type.
+                        </small>
+                        <table id="jsontable_brgy" class="table table-bordered table-striped" width="100%">
+                            <thead>
+                            <tr>
+                                <th>Province</th>
+                                <th>Municipality</th>
+                                <th>Barangay</th>
+                                <th>Total Number of Structures</th>
+                                <th>Total Not Affected</th>
+                                <th>Total Affected</th>
+                                <th>Low</th>
+                                <th>Medium</th>
+                                <th>High</th>
+                                <th>Total Affected%</th>
+                                <th>Stats Table</th>
+                            </tr>
+                            </thead>
+                            <tfoot>
+                            <tr>
+                                <th colspan="3" style="text-align:right"> Total</th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    <a data-toggle="modal" data-target="#myModal" title="Click to Read"
+                       href="#"><strong>Disclaimer</strong></a>
+
+                </div>
+                <!--/table_wrapper-->
+            </div>
+        </div>
+        <!--/collapseSix-->
+    </div>
+</div>
+<div class="col-md-12">
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion4" href="#collapseFour"><span
+                        class="glyphicon glyphicon-globe"></span> Map</a>
+            </h4>
+            <span class="pull-right" id="eventsLogID" style="margin-top: -15px"></span>
+        </div>
+        <div id="collapseFour" class="panel-collapse collapse in" role="tabpanel">
+            <div class="panel-body" style="position: relative;">
+                <div class="col-md-12" id="map_wrapper">
+                    <p id="pLegend"><strong>Flood Hazard Level: </strong><span id="low_text">Low(<0.50 m)</span> <span
+                            id="medium_text">Medium(0.50 m - 1.50 m)</span> <span id="high_text"> High(>1.50 m)</span>
+                        <span id="wl"><strong> Water-Level Station</strong></span> <span class="pull-right"
+                                                                                         id="floodDate"></span></p>
+
+                    <div id="map"></div>
+                    <!--<a  class="btn btn-default btn-xs pull-right" style="margin-top:10px" data-toggle="modal" data-target="#myModalPrintMap" style="text-decoration:none"><strong><span class="glyphicon glyphicon-open" aria-hidden="true"></span> Export Map</strong></a>-->
+                    <a class="btn btn-default btn-xs pull-right" style="margin-top:5px" id="btnprint"
+                       role="button"><span class="glyphicon glyphicon-export" aria-hidden="true"></span> Export Map</a>
+
+                    <p style="font-size:10px" id="map_data"></p>
+
+                    <div class="col-md-12 text-center"
+                         style="position:absolute;top:50%;margin-left: auto; margin-right: auto; left: 0; right: 0;width:250px;padding:10px;background-color:#fff"
+                         id="locateMe"><span class="getme">Loading Structures...Please wait.</span></div>
+                </div>
+                <!--/map_wrapper-->
+            </div>
+        </div>
+    </div>
+    <!--/collapseFour-->
+</div>
+<div class="col-md-12" id="hide_table" style="margin-bottom:200px">
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion8" href="#collapseEight" id="detailed"><span
+                        class="glyphicon glyphicon-info-sign"></span> Detailed Flood Hazard Information</a>
+            </h4>
+        </div>
+        <input type="hidden" id="fEvent"/>
+
+        <div id="collapseEight" class="panel-collapse collapse in" role="tabpanel">
+            <div class="panel-body">
+                <form class="form-inline text-center" style="margin-bottom:40px">
+                    <!--<div class="form-group">
+                        <select class="form-control" id="mymuni" name="mymuni">
+                            <option value="All Municipalities">Select Municipality</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <select class="form-control" id="myplaces" name="myplaces">
+                            <option value="All Barangays">Select Barangay</option>
+                        </select>
+                    </div>-->
+                    <input type="hidden" id="full_muni"/>
+
+                    <div class=" form-group">
+                        <label for="bldg_type"></label><select class="form-control" id="bldg_type" multiple="multiple">
+                        {% for type in buildings %}
+                            <option value="{{ type.description }}">{{ type.description }}</option>
+                        {% endfor %}
+                    </select>
+                    </div>
+                    <div class="form-group">
+                        <input type="button" class="btn btn-primary" id="find" value="Search" style="width:200px"/>
+                    </div>
+                </form>
+                <!--alert-->
+                <div id="detailed_table_header" style="margin-top: 10px"></div>
+                <p class="text-center" id="loading_detailed_table"></p>
+
+                <div class="table-responsive" id="detailed_table_wrapper" style="margin-top: 20px">
+                    <div class="col-md-12">
+                        <small class="text-info"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+                            Click the table row to filter and locate structure on the map.
+                        </small>
+                        <br/>
+                        <table id="table_brgy" class="display table table-bordered" cellspacing="0" width="100%"
+                               style="background-color: #fff">
+                            <thead>
+                            <tr>
+                                <th>Building Name</th>
+                                <th>Building Type</th>
+                                <th>Count</th>
+                                <th>Flood Hazard Level</th>
+                            </tr>
+                            </thead>
+                            <tfoot>
+                            <tr>
+                                <th colspan="4" style="text-align:right"></th>
+                            </tr>
+                            </tfoot>
+                        </table>
+                        <div class="row">
+                            <div class="col-md-6"><a class="pull-left" data-toggle="modal" data-target="#myModal"
+                                                     title="Click to Read" href="#"><strong>Disclaimer</strong></a>
+                            </div>
+                            <div class="col-md-6 text-right"><input type="button"
+                                                                    class="btn btn-primary btn-xs pull-right"
+                                                                    id="resetQ" value="Remove Filter"
+                                                                    title="Click to Remove Filter and Display All Structures"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--/collapseSix-->
+    </div>
+</div>
+<!--/hide_table-->
+</div>
+<!--/row-->
+</div>
+<!-- /container -->
+        <span id="top-link-block" class="hidden">
+        <a href="#top" class="well well-sm" onclick="$('html,body').animate({scrollTop:0},'slow');return false;">
+            <i class="glyphicon glyphicon-chevron-up"></i> Back to Top
+        </a>
+        </span><!-- /top-link-block -->
+<!-- Site footer -->
+<footer class="footer"
+        style="background-color:#2c699d;color:#fff;padding:15px 10px 10px 0;position:absolute;right:0;bottom:0;left:0;">
+    <div class="container">
+        <p>&copy; 2015-2016 CSU: Phil-LiDAR 1 Project, Caraga State University, Ampayon, Butuan City. All Rights
+            Reserved.</p>
+
+    </div>
+    <div class="container">
+        <a href="http://csulidar1.info/" target="_blank" rel="noopener" style="color: #fff;text-decoration: underline">Official
+            Website</a> | <a href="https://www.facebook.com/csulidar1/" target="_blank" rel="noopener"
+                             style="color: #fff; text-decoration: underline">Facebook Page</a>
+    </div>
+</footer>
+
+<select class="form-control" id="geoserver_name" style="display:none">
+</select>
+<input type="hidden" id="hayheader"/>
+
+<!--modal-->
+<div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+     id="modal-content" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div id='forecast' width='100%'>
+                    <p class="text-center" style="margin-top:10px">Rendering graph...Please wait.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel11" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel11">Disclaimer</h4>
+            </div>
+            <div class="modal-body">
+                <p class="text-justify">
+                    The information contained in this website is for general information purposes only. The information
+                    is provided by CSU Phil-LiDAR 1 and while we endeavor to keep the information up to date and
+                    correct, we make no representations or warranties of any kind, express or implied, about the
+                    completeness, accuracy, reliability, suitability or availability with respect to the website or the
+                    information, products, services, or related graphics contained on the website for any purpose. Any
+                    reliance you place on such information is therefore strictly at your own risk.
+                </p>
+
+                <p class="text-justify">
+                    In no event will we be liable for any loss or damage including without limitation, indirect or
+                    consequential loss or damage, or any loss or damage whatsoever arising from loss of data or profits
+                    arising out of, or in connection with, the use of this website.
+
+                </p>
+
+                <p class="text-justify">
+                    Through this website you are able to link to other websites which are not under the control of CSU
+                    Phil-LiDAR 1. We have no control over the nature, content and availability of those sites. The
+                    inclusion of any links does not necessarily imply a recommendation or endorse the views expressed
+                    within them.
+
+                </p>
+
+                <p class="text-justify">
+
+                    Every effort is made to keep the website up and running smoothly. However, CSU Phil-LiDAR 1 takes no
+                    responsibility for, and will not be liable for, the website being temporarily unavailable due to
+                    technical issues beyond our control.
+
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="myModalContactForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel22"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel22">Contact</h4>
+            </div>
+            <div class="modal-body">
+                Engr. Meriam M. Makinano-Santillan, Project Leader<br/>
+                CSU Phil-LiDAR 1 Project<br/>
+                Caraga Center for Geo-informatics<br/>
+                College of Engineering and Information Technology<br/>
+                Caraga State University<br/>
+                Ampayon, Butuan City 8600<br/>
+                Agusan del Norte, Philippines<br/>
+                Telephone Nos.: +63-85-342-1889; +63-85-341-2296 ext. 175<br/>
+                E-mail: mmsantillan@carsu.edu.ph
+
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="myModalContactForm1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel1"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel1">About Flood EViDEns</h4>
+            </div>
+            <div class="modal-body">
+                <p class="text-justify">
+                    The Web-based Near-real Time Flood Event Visualization and Damage Estimations (Flood EViDEns) is an
+                    online geo-visualization application developed through the Phil-LiDAR 1 project of Caraga State
+                    University (CSU). The application is targeted to be utilized by the Local Government Units (LGUs)
+                    and communities in the Caraga Region, Mindanao, Philippines to assist them in geospatially informed
+                    decision making in times of flood disasters.
+
+                </p>
+
+                <p class="text-justify">
+                    The application is an amalgamation of web mapping technology, various geospatial datasets including
+                    LiDAR-derived elevation and information products, hydro-meteorological data, and flood simulation
+                    models to visualize in near-real time the current and possible future extent of flooding and its
+                    associated damages to infrastructures. The Flood EViDEns application facilitates the release and
+                    utilization of this near-real time flood-related information through a user-friendly front end
+                    interface consisting of web map and tables. The application's back-end consists of computers running
+                    flood simulation models and geospatial analysis to dynamically produce (in an automated manner)
+                    current and future flood extents, and tabulated information on the structures affected by flooding
+                    including hazard types. These outputs are forwarded into a PostgreSQL/PostGIS spatial database where
+                    it is accessed by the front end interface for web visualization.
+                </p>
+                <img src="{% static "images/dev.PNG" %}" class="img-responsive">
+
+                <p class="text-justify">
+                    The information provided by Flood EViDEns is very important especially to the LGUs and the community
+                    as it can increase awareness and responsiveness of the public to the impending flood disaster.
+                    Providing this kind of information during a heavy rainfall event is useful as it could assist in
+                    preparation for evacuation, in easily identifying areas that need immediate action, in identifying
+                    areas that should be avoided, and in estimating the severity of damage to people and infrastructure
+                    as flooding progresses.
+
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="myModalDataSources" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Data Sources</h4>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <dl>
+                        <dt>
+                        <h4>Topographic Datasets (SAR DEM, LiDAR DTMs and DSMs)</h4>
+                        <dd><a href="http://dream.upd.edu.ph" target="_blank" rel="noopener"> Disaster Risk Exposure and
+                            Assessment for Mitigation (DREAM) / Phil-LiDAR 1 Programs, University of the
+                            Philippines-Diliman</a></dd>
+                        <br/>
+                        <dt>
+                        <h4>Rainfall and Water Level Data</h4>
+                        <dd>DOST-ASTI (Advanced Science And Technology Institute)</dd>
+                        <br/>
+                        <dt>
+                        <h4>Flood Hazard Maps and Water Level Forecasts</h4>
+                        <dd><a href="http://csulidar1.info/" target="_blank" rel="noopener">CSU-Phil-LIDAR 1</a></dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="myModalDocumentation" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel2">Documentation</h4>
+            </div>
+            <div class="modal-body">
+                <p class="text-justify">
+                    Santillan, J.R., Morales, E.M.O., Makinano-Santillan, M., 2015. Flood EViDEns: A web-based
+                    application for near-real time flood event visualization and damage estimations.<span
+                        style="font-weight: bold"><i> Proceedings of the 36th Asian Conference on Remote Sensing 2015
+                    (ACRS 2015) – Fostering Resilient Growth in Asia</i> </span>, 19-23 October 2015, Quezon City, Metro
+                    Manila, Philippines. View/Download PDF: <a href="http://acrs2015.ccgeo.info/proceedings/TH1-6-1.pdf"
+                                                               target="_blank" rel="noopener">Link 1</a> | <a
+                        href="http://csulidar1.info/pub/Paper_2015_36thACRS_TH1-6-1.pdf" target="_blank" rel="noopener">Link
+                    2</a>
+                </p>
+
+                <p class="text-justify">Santillan, J.R., Makinano-Santillan, M., Morales, Edsel Matt O., 2015. Flood
+                    EViDEns: Near-real time flood event visualization and damage estimations for geospatially-informed
+                    decision making in times of flooding. <span style="font-weight: bold;"><i>Paper presented in
+                        GeoSmart Asia 2015</i> </span>, 29 September – 01 October 2015, Putra World Trade Center (PWTC),
+                    Kuala Lumpur, Malaysia. <a
+                            href="http://csulidar1.info/pub/Paper_2015_GeoSmartAsia_JojeneSantillan_ppt.pdf"
+                            target="_blank" rel="noopener">View/Download PDF</a></p>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="myModalPartner" tabindex="-1" role="dialog" aria-labelledby="myModalLabel3"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel3">Partner Institutions</h4>
+            </div>
+            <div class="modal-body">
+                <div>
+
+                    <table class="table table-striped" id="partner">
+                        <tbody>
+                        <tr>
+                            <td><img src="{% static "images/ccgeo.PNG" %}" alt="ccgeo_logo" width="75px" height="75px"/>
+                            </td>
+                            <td><span> Caraga Center for Geo-Informatics</span></td>
+                        </tr>
+                        <tr>
+                            <td><img src="{% static "images/ceit.PNG" %}" alt="ccgeo_logo" width="75px" height="75px"/>
+                            </td>
+                            <td><span> College of Engineering and Information Technology</span></td>
+                        </tr>
+                        <tr>
+                            <td><img src="{% static "images/csu_logo2.png" %}" alt="csu_logo" width="60px"
+                                     height="90px"/></td>
+                            <td><span> Caraga State University</span></td>
+                        </tr>
+                        <tr>
+                            <td><img src="{% static "images/DREAM_logo2.png" %}" alt="dream_logo" width="75px"
+                                     height="75px"/></td>
+                            <td><span> Disaster Risk Exposure and Assessment for Mitigation (DREAM) / Phil-LiDAR 1 Programs, University of the Philippines-Diliman)</span>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><img src="{% static "images/dost_caraga.PNG" %}" alt="dost_caraga_logo" width="75px"
+                                     height="75px"/></td>
+                            <td><span> Department of Science and Technology – Caraga Region</span></td>
+                        </tr>
+                        <tr>
+                            <td><img src="{% static "images/pcieerd2.png" %}" alt="pcieerd_logo" width="75px"
+                                     height="75px"/></td>
+                            <td><span> Department of Science and Technology - Philippine Council for Industry, Energy and Emerging Technology Research and Development (DOST-PCIEERD)</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><img src="{% static "images/DOST_Seal2.png" %}" alt="dost_lgo" width="75px"
+                                     height="75px"/></td>
+                            <td><span> Department of Science and Technology (DOST)</span></td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="myModalAcknowledgment" tabindex="-1" role="dialog" aria-labelledby="myModalLabel4"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel4">Acknowledgement</h4>
+            </div>
+            <div class="modal-body">
+                <p class="text-justify">
+                    This web application is an output of the Caraga State University (CSU) Phil-LiDAR 1 project under
+                    the “Phil-LiDAR 1. Hazard Mapping of the Philippines using LiDAR” program funded by the Department
+                    of Science and Technology (DOST).
+
+                </p>
+
+                <p class="text-justify">
+                    We thank the CSU Phil-LIDAR 2 Project and the Information Communication Technology (ICT) Center of
+                    CSU for providing us access to their data server, as well as for their assistance in making the
+                    public version of Flood EViDEns accessible online.
+                </p>
+
+                <p class="text-justify">
+                    We also thank all CSU-Phil-LIDAR 1 technical staff and assistants, as well as the LGUs in Caraga
+                    Region for their assistance during the conduct of hydrological measurements and flood map validation
+                    surveys which were used in the preparation and calibration of the flood models.
+                </p>
+
+                <p class="text-justify">
+                    We acknowledge the ASTI DOST for giving us access to the near-real time rainfall and water level
+                    datasets needed by Flood EViDEns.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade bs-example-modal-lg" id="myGraph" tabindex="-1" role="dialog" aria-labelledby="myModalLabel5"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div id="graph_me" style="min-width: 500px;width:800px; height: 650px; margin: 0 auto"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade bs-example-modal-lg" id="myGraph1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel5"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div id="graph_me1" style="min-width: 500px;width:800px; height: 650px; margin: 0 auto"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="myModalPrintMap" tabindex="-1" role="dialog" aria-labelledby="myModalLabel6"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel6">Export Map</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <input type="text" class="form-control" id="desc" placeholder="Describe map here...">
+                </div>
+                <div class="form-group">
+                    <select class="form-control" id="qlty">
+                        <option value="75">Map Quality</option>
+                        <option value="75">Low</option>
+                        <option value="150">Medium</option>
+                        <option value="300">High</option>
+                    </select>
+                </div>
+                <!--<a class="btn btn-default" id="btnprint" target="_blank" rel="noopener"  title="Click to Export Map; this does not include the base map(Google Maps)"><span class="glyphicon glyphicon-export" aria-hidden="true"></span>Go</a>-->
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade bs-example-modal-lg" id="myPieGraph" tabindex="-1" role="dialog" aria-labelledby="myModalLabel7"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-body">
+                <h4 id="brgy_pie_graph" class="text-center">Rendering Graph...Please wait.</h4>
+                <ul class="nav nav-tabs">
+                    <li class="active"><a data-toggle="tab" href="#home">High</a></li>
+                    <li><a data-toggle="tab" href="#menu1">Medium</a></li>
+                    <li><a data-toggle="tab" href="#menu2">Low</a></li>
+                    <li><a data-toggle="tab" href="#menu3">Building Types</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div id="home" class="tab-pane fade in active">
+                        <div id="graph_me_high" style="min-width: 500px;width:800px; margin: 0 auto"></div>
+                    </div>
+                    <div id="menu1" class="tab-pane fade">
+                        <div id="graph_me_medium" style="min-width: 500px;width:800px;margin: 0 auto"></div>
+                    </div>
+                    <div id="menu2" class="tab-pane fade">
+                        <div id="graph_me_low" style="min-width: 500px;width:800px;margin: 0 auto"></div>
+                    </div>
+                    <div id="menu3" class="tab-pane fade">
+                        <br/>
+                        <table class="table table-bordered table-striped" id="tbl_bldgs">
+                            <thead>
+                            <th>Building Type</th>
+                            <th>Total Number of Affected Structures</th>
+                            <th>Total Affected %</th>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--JQUERY JS-->
+<script src="{% static "js/jquery-1.11.1.min.js" %}"></script>
+<script type="text/javascript" src="{% static "js/bootstrap.js" %}"></script>
+<script type="text/javascript" src="{% static "openlayer/OpenLayers.js" %}"></script>
+<script type="text/javascript"
+        src="http://maps.google.com/maps/api/js?v=3.28&key=AIzaSyBZ1_4pxUOdi_1X0Zg5-teIkdOJP__m_kE"></script>
+<script type="text/javascript" src="{% static "js/bootstrap-multiselect.js" %}"></script>
+<script type="text/javascript" src="{% static "js/jquery.chained.remote.min.js" %}"></script>
+<script type="text/javascript" src="{% static "js/datatables.min.js" %}"></script>
+<script type="text/javascript" src="{% static "js/bootstrap-tour.min.js" %}"></script>
+<script type="text/javascript" src="{% static "js/fullscreen-api-polyfill.js" %}"></script>
+<script type="text/javascript" src="{% static "js/FullScreen.js" %}"></script>
+<script type="text/javascript" src="{% static "js/highcharts.js" %}"></script>
+<script type="text/javascript" src="{% static "js/exporting.js" %}"></script>
+<script type="text/javascript" src="{% static "js/moment.js" %}"></script>
+<script type="text/javascript" src="{% static "js/evidenJS_v1.0.js" %}"></script>
+
+<script type="text/javascript">
+    $(document).ajaxStart(function () {
+        $(':button').not('#load_station:button').prop('disabled', true);
+
+    }).ajaxStop(function () {
+
+                $(':button').not('#load_station:button').prop('disabled', false);
+                $('#flood_event').find('option[value="Nothing Dude"]').each(function () {
+                    $(this).attr('disabled', true);
+                    $(this).css({
+                        "font-weight": "bold",
+                        "font-size": "16px"
+                    });
+                });
+            });
+
+</script>
+</body>
+</html>

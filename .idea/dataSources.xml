@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourceManagerImpl" format="xml" hash="931394184">
+    <data-source source="LOCAL" name="Django default" uuid="e3adf2bf-88eb-4888-bf9f-b5252c61c1e5">
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql://127.0.0.1:5432/dblidar</jdbc-url>
+      <user-name>postgres</user-name>
+      <user-password>dfe7dfcbdfdedfdedfe7dfc5dfd8dfd0df9b</user-password>
+      <libraries>
+        <library>
+          <url>file://</url>
+        </library>
+      </libraries>
+    </data-source>
+  </component>
+</project>
+
