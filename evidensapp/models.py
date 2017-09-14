@@ -1840,3 +1840,125 @@ class SurigaoDelNorteStatsSeniangBldgtype(models.Model):
     class Meta:
         managed = False
         db_table = 'surigao_del_norte_stats_seniang_bldgtype'
+
+
+##CBR reprojected
+class Cabadbaran2Year(models.Model):
+    #id = models.IntegerField()
+    grid_code = models.IntegerField()
+    #shape_leng = models.FloatField()
+    #shape_area = models.FloatField()
+    #hazard = models.CharField(max_length=30)
+    geom = models.MultiPolygonField(srid=32651)
+    objects = models.GeoManager()
+
+    def __unicode__(self):
+        return unicode(self.grid_code)
+
+
+class Cabadbaran5Year(models.Model):
+    #id = models.IntegerField()
+    grid_code = models.IntegerField()
+    #shape_leng = models.FloatField()
+    #shape_area = models.FloatField()
+    #hazard = models.CharField(max_length=30)
+    geom = models.MultiPolygonField(srid=32651)
+    objects = models.GeoManager()
+
+    def __unicode__(self):
+        return unicode(self.grid_code)
+
+
+class Cabadbaran10Year(models.Model):
+    #id = models.IntegerField()
+    grid_code = models.IntegerField()
+    #shape_leng = models.FloatField()
+    #shape_area = models.FloatField()
+    #hazard = models.CharField(max_length=30)
+    geom = models.MultiPolygonField(srid=32651)
+    objects = models.GeoManager()
+
+    def __unicode__(self):
+        return unicode(self.grid_code)
+
+
+class Cabadbaran25Year(models.Model):
+    #id = models.IntegerField()
+    grid_code = models.IntegerField()
+    #shape_leng = models.FloatField()
+    #shape_area = models.FloatField()
+    #hazard = models.CharField(max_length=30)
+    geom = models.MultiPolygonField(srid=32651)
+    objects = models.GeoManager()
+
+    def __unicode__(self):
+        return unicode(self.grid_code)
+
+
+class Cabadbaran50Year(models.Model):
+    #id = models.IntegerField()
+    grid_code = models.IntegerField()
+    #shape_leng = models.FloatField()
+    #shape_area = models.FloatField()
+    #hazard = models.CharField(max_length=30)
+    geom = models.MultiPolygonField(srid=32651)
+    objects = models.GeoManager()
+
+    def __unicode__(self):
+        return unicode(self.grid_code)
+
+
+class Cabadbaran100Year(models.Model):
+    #id = models.IntegerField()
+    grid_code = models.IntegerField()
+    #shape_leng = models.FloatField()
+    #shape_area = models.FloatField()
+    #hazard = models.CharField(max_length=30)
+    geom = models.MultiPolygonField(srid=32651)
+    objects = models.GeoManager()
+
+    def __unicode__(self):
+        return unicode(self.grid_code)
+
+
+class CabadbaranAgaton(models.Model):
+    #id = models.IntegerField()
+    grid_code = models.IntegerField()
+    #shape_leng = models.FloatField()
+    #shape_area = models.FloatField()
+    #hazard = models.CharField(max_length=30)
+    geom = models.MultiPolygonField(srid=32651)
+    objects = models.GeoManager()
+
+    def __unicode__(self):
+        return unicode(self.grid_code)
+
+
+class CabadbaranSeniang(models.Model):
+    #id = models.IntegerField()
+    grid_code = models.IntegerField()
+    #shape_leng = models.FloatField()
+    #shape_area = models.FloatField()
+    #hazard = models.CharField(max_length=30)
+    geom = models.MultiPolygonField(srid=32651)
+    objects = models.GeoManager()
+
+    def __unicode__(self):
+        return unicode(self.grid_code)
+
+
+class CabadbaranBldgRe(models.Model):
+    #id = models.IntegerField()
+    bldg_name = models.CharField(max_length=50)
+    #height = models.FloatField()
+    code = models.CharField(max_length=25)
+    #block_name = models.CharField(max_length=75)
+    bldg_type = models.CharField(max_length=50)
+    brgy_locat = models.CharField(max_length=50)
+    municipali = models.CharField(max_length=50)
+    province = models.CharField(max_length=50)
+    geom = models.MultiPolygonField(srid=32651)
+    objects = models.GeoManager()
+
+    def __unicode__(self):
+        return unicode(self.bldg_name)
