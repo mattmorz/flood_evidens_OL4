@@ -8,6 +8,7 @@
       <w>addclass</w>
       <w>agaton</w>
       <w>agatoncbr</w>
+      <w>agusan</w>
       <w>allbrgys</w>
       <w>backends</w>
       <w>basyang</w>
@@ -23,6 +24,7 @@
       <w>cabadbaran</w>
       <w>cabadbaranbldg</w>
       <w>cabadbaranfloodhazard</w>
+      <w>caraga</w>
       <w>cbrfiftyyear</w>
       <w>cbrfiveyear</w>
       <w>cbrhundredyear</w>
@@ -33,7 +35,9 @@
       <w>cnter</w>
       <w>csrf</w>
       <w>csulidar</w>
+      <w>csvfile</w>
       <w>dblidar</w>
+      <w>ddata</w>
       <w>dddd</w>
       <w>ddta</w>
       <w>defaultencode</w>
@@ -48,7 +52,9 @@
       <w>fflood</w>
       <w>fiel</w>
       <w>fomart</w>
+      <w>fontsize</w>
       <w>fresult</w>
+      <w>geosafer</w>
       <w>geoserver</w>
       <w>geoservername</w>
       <w>getanother</w>
@@ -93,6 +99,7 @@
       <w>nearrealtime</w>
       <w>noopener</w>
       <w>norte</w>
+      <w>olscale</w>
       <w>onload</w>
       <w>onreadystatechange</w>
       <w>ooops</w>
@@ -107,7 +114,10 @@
       <w>relhead</w>
       <w>renderers</w>
       <w>respp</w>
+      <w>scalenumber</w>
       <w>scaleto</w>
+      <w>scaleunit</w>
+      <w>scalewidth</w>
       <w>seniang</w>
       <w>seniangcbr</w>
       <w>shapefiles</w>
@@ -124,6 +134,7 @@
       <w>tandag</w>
       <w>tblbldg</w>
       <w>temstr</w>
+      <w>textto</w>
       <w>tileloaded</w>
       <w>tileloadend</w>
       <w>tileloaderror</w>
@@ -136,6 +147,12 @@
       <w>vlayer</w>
       <w>wfsol</w>
       <w>wsgi</w>
+      <w>xfirst</w>
+      <w>xfourth</w>
+      <w>xsecond</w>
+      <w>xthird</w>
+      <w>xzero</w>
+      <w>yzero</w>
       <w>zoomend</w>
       <w>ztmptable</w>
     </words>

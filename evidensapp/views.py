@@ -1,9 +1,12 @@
 import json
 import sys
+
 from django.http import StreamingHttpResponse, HttpResponseNotAllowed, HttpResponse
 from django.shortcuts import render
 from django.db import connection
+
 from evidensapp.models import RiverBasinMunicipality, BuildingType, FloodEventByProvince
+
 
 reload(sys)
 sys.setdefaultencoding('utf8')
@@ -153,3 +156,4 @@ def piechart(request):
         data = cursor.fetchall()
         json_data = json.dumps(data)
         return StreamingHttpResponse(json_data, content_type='application/json')
+

@@ -114,12 +114,20 @@ body {
     right: 0
 }
 
-#export-png, #info-save {
+#info-save {
     position: absolute;
     top: 540px;
     left: 0
 }
 
+#export-png {
+    position: absolute;
+    top: 540px;
+    right: 0
+}
+.ol-scale-line{
+    visibility: hidden;
+}
 .pLegend {
     bottom: 35px;
     left: 10px;

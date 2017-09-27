@@ -5,7 +5,7 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
                        url(r'^$', 'evidensapp.views.home', name='home'),
-                       url(r'^beta/$', 'evidensapp.views.beta', name='home'),
+                       url(r'^beta/$', 'evidensapp.views.beta', name='beta'),
                        url(r'^tbl/$', 'evidensapp.views.floodhazard_tbl', name='table'),
                        url(r'^cnt_bldg/$', 'evidensapp.views.brgy_info', name='cnt_bldg'),
                        url(r'^get_flood_event/$', 'evidensapp.views.m_getfloodevent', name='get_flood_event'),

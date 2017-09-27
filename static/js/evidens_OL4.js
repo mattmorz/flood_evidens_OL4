@@ -265,11 +265,9 @@ function loadScript(url, completeCallback) {
 
 }
 
-/**
  function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
- **/
 
 function show_graph(data, info) {
     var place = [],
@@ -491,7 +489,7 @@ function f_general_stats(river_basin, flood_event, pre_info) {
                             }
                         ],
                         dom: 'Bfrtip',
-                        /**footerCallback: function () {
+                        footerCallback: function () {
                             var api = this.api();
                             // Total over all pages
                             var tot_n = api.column(3).data().reduce(function (a, b) {
@@ -563,7 +561,7 @@ function f_general_stats(river_basin, flood_event, pre_info) {
                             $(api.column(7).footer()).html(ft4);
                             $(api.column(8).footer()).html(ft5);
                             $(api.column(9).footer()).html(ft6);
-                        },**/
+                        },
                         buttons: [
                             {
                                 text: 'View in Graph',
@@ -718,7 +716,7 @@ function f_general_stats(river_basin, flood_event, pre_info) {
                     }
                 ],
                 dom: 'Bfrtip',
-                /**footerCallback: function () {
+                footerCallback: function () {
                     var api = this.api();
 
                     // Total over all pages
@@ -791,7 +789,7 @@ function f_general_stats(river_basin, flood_event, pre_info) {
                     $(api.column(7).footer()).html(ft4);
                     $(api.column(8).footer()).html(ft5);
                     $(api.column(9).footer()).html(ft6);
-                },**/
+                },
                 buttons: [
                     {
                         text: 'View in Graph',
@@ -1188,6 +1186,7 @@ function addWMSLayerOL4(layer_name, geoserver_name) {
                 'TILED': true
             },
             serverType: 'geoserver',
+            crossOrigin: 'anonymous',
             crs: 'EPSG:3857'
         }),
         title: layer_name,
@@ -1226,7 +1225,9 @@ function styleFunction(feature) {
 function addWFSOL4(geoserver_name, layer_name, filters) {
     $(container).popover('destroy');
     $("#locateMe").show();
-    var vectorSource = new ol.source.Vector();
+    var vectorSource = new ol.source.Vector({
+        crossOrigin: 'anonymous'
+    });
     var vector = new ol.layer.Vector({
         source: vectorSource,
         style: styleFunction,
@@ -1491,6 +1492,13 @@ function init() {
     });
 
     var InsertToCanvas = (function () {
+        var olscale = $('.ol-scale-line-inner');
+        var line1 = 7;
+        var x_offset = 10;
+        var y_offset = 15;
+        var fontsize1 = 14;
+        var multiplier = 1;
+        var canvas = $('canvas').get(0);
         function writeLegendtoCanvas(evt) {
             var ctx = evt.context;
             var width = ctx.canvas.width;
@@ -1537,6 +1545,56 @@ function init() {
             ctx.fillStyle = "#000";
             ctx.font = "bold 14px Arial ";
             ctx.fillText("Water-Level Station", width - 185, height - (height - 152));
+
+            var scalewidth = parseInt(olscale.css('width'),10)*multiplier;
+            var scale = olscale.text();
+            var scalenumber = parseInt(scale,10)*multiplier;
+            var scaleunit = scale.match(/[Aa-zZ]{1,}/g);
+
+            //Scale Text
+            ctx.beginPath();
+            ctx.fillStyle = "#000";
+            ctx.font = "bold 15px Arial ";
+            var textString = [scalenumber + ' ' + scaleunit],
+                textWidth = ctx.measureText(textString ).width;
+            ctx.strokeText(textString, (scalewidth/2) - (textWidth / 2) + 10, canvas.height - y_offset - fontsize1 / 2);
+            ctx.fillText(textString, (scalewidth/2) - (textWidth / 2) + 10, canvas.height - y_offset - fontsize1 / 2);
+
+            //Scale Dimensions
+            var yzero = canvas.height - y_offset;
+            var xfirst = x_offset + scalewidth / 4;
+            var xsecond = xfirst + scalewidth / 4;
+            var xthird = xsecond + scalewidth / 4;
+            var xfourth = xthird + scalewidth / 4;
+
+            //sections stripe
+            ctx.beginPath();
+            ctx.lineWidth = line1;
+            ctx.strokeStyle = "#2e5990";
+            ctx.moveTo(x_offset, yzero);
+            ctx.lineTo(xfirst, yzero);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.lineWidth = line1;
+            ctx.strokeStyle = "#3d78ab";
+            ctx.moveTo(xfirst, yzero);
+            ctx.lineTo(xsecond, yzero);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.lineWidth = line1;
+            ctx.strokeStyle = "#2e5990";
+            ctx.moveTo(xsecond, yzero);
+            ctx.lineTo(xthird, yzero);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.lineWidth = line1;
+            ctx.strokeStyle = "#3d78ab";
+            ctx.moveTo(xthird, yzero);
+            ctx.lineTo(xfourth, yzero);
+            ctx.stroke();
         }
 
         function postcompose() {
@@ -1551,10 +1609,6 @@ function init() {
     })();
 
     InsertToCanvas.postcompose();
-    map.on('postcompose', function (event) {
-        //writeLegendtoCanvas(event);
-        //console.log('wa')
-    });
 }
 
 function toggleControl(e) {
@@ -1795,7 +1849,62 @@ window.onload = function () {
 
 };
 
+
+var InsertFloodText = (function () {
+    function writeTexttoCanvas(evt) {
+        var ctx = evt.context;
+        var width = ctx.canvas.width;
+        var province_name = $("#locality").find("option:selected").text();
+        var flood_event = $("#flood_event").find("option:selected").text();
+        ctx.beginPath();
+        ctx.fillStyle = "#fff";
+        ctx.font = "bold 17px Arial ";
+        ctx.lineWidth= .75;
+        ctx.strokeStyle='#3d78ab';
+        var textString = '';
+        if (($("#show_floodMap").is(":checked")) && ($("#show_affected").is(":checked"))){
+            textString = province_name+' '+ flood_event+' Flood Hazard Map and the Estimated Number of Affected Structures';
+        }else if ($("#show_floodMap").is(":checked")){
+            textString = province_name+' '+ flood_event+' Flood Hazard Map';
+        }else if ($("#show_affected").is(":checked")){
+             textString = 'Estimated Number of Affected Structures in '+province_name+' for '+ flood_event+ ' Flood Event';
+        }
+        var textWidth = ctx.measureText(textString).width;
+        ctx.fillText(textString, (width / 2) - (textWidth / 2), 30);
+        ctx.strokeText(textString, (width/2) - (textWidth / 2), 30);
+    }
+
+    function postcompose() {
+        map.on('postcompose', function (evt) {
+            writeTexttoCanvas(evt);
+        });
+    }
+
+    return {
+        postcompose: postcompose
+    };
+})();
+
 $(document).ready(function () {
+
+    $('#export-png').click(function(){
+            InsertFloodText.postcompose();
+            loadScript(pre_url + "/static/js/FileSaver.min.js",
+            function () {
+                    map.once('postcompose', function(event) {
+                      var canvas = event.context.canvas;
+                      if (navigator.msSaveBlob) {
+                        navigator.msSaveBlob(canvas.msToBlob(), 'flood_evidens_'+utc+'.png');
+                      } else {
+                        canvas.toBlob(function(blob) {
+                          saveAs(blob, 'flood_evidens_'+utc+'.png');
+                        });
+                      }
+                    });
+                    map.renderSync();
+            });
+    });
+
     //water level button
     $('#load_station').click(function () {
         var filename = $("#water_station").val();
@@ -2022,7 +2131,10 @@ $(document).ready(function () {
         }
 
         f_detailed_table(brgy, muni, flood_event_val, river_basin_name);
-        addWFSOL4(flood_event_val, layer_name, filters)
+        if ($("#show_affected").is(":checked")) {
+            addWFSOL4(flood_event_val, layer_name, filters)
+        }
+
     });
 
     //locating affected structures on the map
