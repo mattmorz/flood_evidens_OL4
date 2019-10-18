@@ -32,6 +32,6 @@ six==1.10.0
 sorl-thumbnail==12.3
 tempora==1.8
 tzlocal==1.2
-urllib3==1.21.1
+urllib3==1.24.2
 vectorformats==0.1
 virtualenv==1.11.6
