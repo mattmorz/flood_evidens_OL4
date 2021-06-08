@@ -17,7 +17,7 @@ idna==2.5
 lxml==3.4.2
 mbutil==0.2.0
 pilkit==1.1.13
-Pillow==3.1.1
+Pillow==8.2.0
 portend==2.1.2
 psycopg2==2.6.1
 pypiwin32==219
