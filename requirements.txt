@@ -24,7 +24,7 @@ pypiwin32==219
 pypm==1.4.3
 pythonselect==1.3
 pytz==2015.7
-pywin32==218.3
+pywin32==301
 requests==2.17.3
 rethinkdb==2.3.0.post6
 simplejson==3.6.5
